@@ -37,13 +37,27 @@ function drawPolygon(arr) {
     game.innerHTML += `<div style="clip-path: polygon(${clipPath})"></div>`
 }
 
+function clear() {
+    let game = document.getElementById("game");
+    game.innerHTML = "";
+}
+
 function showBlock(xr, yr, zr, rot, ele, x, y, z, xw, yw, zw) {
     // Draw x part
     if (!xr) {
-        drawPolygon([convert])
+        drawPolygon([
+            convert3D2D(x, y, z, rot, ele),
+            convert3D2D(x, y+yw, z, rot, ele),
+            convert3D2D(x, y+yw, z+zw, rot, ele),
+            convert3D2D(x, y, z+zw, rot, ele),
+        ]);
     } else {
-
     }
 }
 
-drawPolygon([[0, 0], [100, 0], [200, 200]])
+let rot = 4;
+setInterval(function() {
+    clear();
+    showBlock(false, false, false, rot, rot/6, 0, 0, 0, 20, 100, 300);
+    rot++;
+}, 50)
