@@ -16,8 +16,8 @@ function addvector(v, v2) {
 
 function convert3D2D(x, y, z, rot, ele) {
     let zvector = [0, quicksin(ele)]
-    let xvector = [quickcos(rot), quicksin(rot)*quicksin(ele)]
-    let yvector = [-quicksin(rot), quickcos(rot)*quicksin(ele)]
+    let xvector = [quickcos(rot), quicksin(rot)*quickcos(ele)]
+    let yvector = [-quicksin(rot), quickcos(rot)*quickcos(ele)]
     let projectedx = multiplyvector(xvector, x);
     let projectedy = multiplyvector(yvector, y);
     let projectedz = multiplyvector(zvector, z);
@@ -42,8 +42,11 @@ function clear() {
     game.innerHTML = "";
 }
 
-function showBlock(xr, yr, zr, rot, ele, x, y, z, xw, yw, zw) {
-    // Draw x part
+function showBlock(rot, ele, x, y, z, xw, yw, zw) {
+    xr = true
+    yr = true
+    zr = true
+    // Draw x face
     if (!xr) {
         drawPolygon([
             convert3D2D(x, y, z, rot, ele),
@@ -52,12 +55,34 @@ function showBlock(xr, yr, zr, rot, ele, x, y, z, xw, yw, zw) {
             convert3D2D(x, y, z+zw, rot, ele),
         ]);
     } else {
+        drawPolygon([
+            convert3D2D(x+xw, y, z, rot, ele),
+            convert3D2D(x+xw, y+yw, z, rot, ele),
+            convert3D2D(x+xw, y+yw, z+zw, rot, ele),
+            convert3D2D(x+xw, y, z+zw, rot, ele),
+        ]);
+    }
+    // Draw y face
+    if (!yr) {
+        drawPolygon([
+            convert3D2D(x, y, z, rot, ele),
+            convert3D2D(x+xw, y, z, rot, ele),
+            convert3D2D(x+xw, y, z+zw, rot, ele),
+            convert3D2D(x, y, z+zw, rot, ele),
+        ]);
+    } else {
+        drawPolygon([
+            convert3D2D(x, y+yw, z, rot, ele),
+            convert3D2D(x+xw, y+yw, z, rot, ele),
+            convert3D2D(x+xw, y+yw, z+zw, rot, ele),
+            convert3D2D(x, y+yw, z+zw, rot, ele),
+        ]);
     }
 }
 
 let rot = 4;
 setInterval(function() {
     clear();
-    showBlock(false, false, false, rot, rot/6, 0, 0, 0, 20, 100, 300);
-    rot++;
+    showBlock(rot, rot/6, 0, 0, 0, 20, 100, 300);
+    rot += 0.09;
 }, 50)
