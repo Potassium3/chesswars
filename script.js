@@ -43,9 +43,9 @@ function clear() {
 }
 
 function showBlock(rot, ele, x, y, z, xw, yw, zw) {
-    xr = true
-    yr = true
-    zr = true
+    xr = (rot%360) < 180
+    yr = (rot%360) < 90 || (rot%360) >= 270
+    zr = false
     // Draw x face
     if (!xr) {
         drawPolygon([
@@ -78,11 +78,27 @@ function showBlock(rot, ele, x, y, z, xw, yw, zw) {
             convert3D2D(x, y+yw, z+zw, rot, ele),
         ]);
     }
+    // Draw z face
+    if (!zr) {
+        drawPolygon([
+            convert3D2D(x, y, z, rot, ele),
+            convert3D2D(x+xw, y, z, rot, ele),
+            convert3D2D(x+xw, y+yw, z, rot, ele),
+            convert3D2D(x, y+yw, z, rot, ele),
+        ]);
+    } else {
+        drawPolygon([
+            convert3D2D(x, y, z+zw, rot, ele),
+            convert3D2D(x+xw, y, z+zw, rot, ele),
+            convert3D2D(x+xw, y+yw, z+zw, rot, ele),
+            convert3D2D(x, y+yw, z+zw, rot, ele),
+        ]);
+    }
 }
 
 let rot = 4;
 setInterval(function() {
     clear();
-    showBlock(rot, rot/6, 0, 0, 0, 20, 100, 300);
+    showBlock(rot, 45, 0, 0, 0, 20, 100, 300);
     rot += 0.09;
 }, 50)
