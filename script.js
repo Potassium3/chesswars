@@ -1,0 +1,49 @@
+function quicksin(x) {
+    return Math.sin(x)
+}
+
+function quickcos(x) {
+    return Math.cos(x)
+}
+
+function multiplyvector(v, m) {
+    return [v[0]*m, v[1]*m]
+}
+
+function addvector(v, v2) {
+    return [v[0]+v2[0], v[1]+v2[1]]
+}
+
+function convert3D2D(x, y, z, rot, ele) {
+    let zvector = [0, quicksin(ele)]
+    let xvector = [quickcos(rot), quicksin(rot)*quicksin(ele)]
+    let yvector = [-quicksin(rot), quickcos(rot)*quicksin(ele)]
+    let projectedx = multiplyvector(xvector, x);
+    let projectedy = multiplyvector(yvector, y);
+    let projectedz = multiplyvector(zvector, z);
+    let projected = addvector(addvector(projectedx, projectedy), projectedz)
+    return projected
+}
+
+function drawPolygon(arr) {
+    const width = 1000
+    const height = 1000
+    let game = document.getElementById("game");
+    let clipPath = ""
+    for (let item of arr) {
+        clipPath += `calc(${item[0]+width/2}px) calc(${item[1]+height/2}px),`
+    }
+    clipPath = clipPath.slice(0, -1);
+    game.innerHTML += `<div style="clip-path: polygon(${clipPath})"></div>`
+}
+
+function showBlock(xr, yr, zr, rot, ele, x, y, z, xw, yw, zw) {
+    // Draw x part
+    if (!xr) {
+        drawPolygon([convert])
+    } else {
+
+    }
+}
+
+drawPolygon([[0, 0], [100, 0], [200, 200]])
