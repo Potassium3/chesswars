@@ -1,5 +1,5 @@
-const width = window.innerWidth;
-const height = window.innerHeight;
+let width = window.innerWidth;
+let height = window.innerHeight;
 
 function quicksin(x) {
     return Math.sin(x*(3.14159*2)/360)
@@ -70,14 +70,14 @@ function showBlock(rot, ele, x, y, z, xw, yw, zw, rgb) {
             convert3D2D(x+xw, y, z, rot, ele),
             convert3D2D(x+xw, y, z+zw, rot, ele),
             convert3D2D(x, y, z+zw, rot, ele),
-        ], [rgb[0]-15, rgb[1]-15, rgb[2]-15]);
+        ], [rgb[0]*0.9, rgb[1]*0.9, rgb[2]*0.9]);
     } else {
         drawPolygon([
             convert3D2D(x, y+yw, z, rot, ele),
             convert3D2D(x+xw, y+yw, z, rot, ele),
             convert3D2D(x+xw, y+yw, z+zw, rot, ele),
             convert3D2D(x, y+yw, z+zw, rot, ele),
-        ], [rgb[0]-15, rgb[1]-15, rgb[2]-15]);
+        ], [rgb[0]*0.9, rgb[1]*0.9, rgb[2]*0.9]);
     }
     // Draw z face
     if (!zr) {
@@ -86,14 +86,14 @@ function showBlock(rot, ele, x, y, z, xw, yw, zw, rgb) {
             convert3D2D(x+xw, y, z, rot, ele),
             convert3D2D(x+xw, y+yw, z, rot, ele),
             convert3D2D(x, y+yw, z, rot, ele),
-        ], [rgb[0]-8, rgb[1]-8, rgb[2]-8]);
+        ], [rgb[0]*0.95, rgb[1]*0.95, rgb[2]*0.95]);
     } else {
         drawPolygon([
             convert3D2D(x, y, z+zw, rot, ele),
             convert3D2D(x+xw, y, z+zw, rot, ele),
             convert3D2D(x+xw, y+yw, z+zw, rot, ele),
             convert3D2D(x, y+yw, z+zw, rot, ele),
-        ], [rgb[0]-8, rgb[1]-8, rgb[2]-8]);
+        ], [rgb[0]*0.95, rgb[1]*0.95, rgb[2]*0.95]);
     }
 }
 
@@ -102,12 +102,12 @@ function interpretLML(data, x, y, z, xw, yw, zw) {
     let yr = (rot%360) < 90 || (rot%360) >= 270
     let zr = false
     if (!data.includes("(")) {
-        if (data == "green") {
-            showBlock(30, 60, x, y, z, xw, yw, zw, [127, 255, 127]);
-
+        if (data == "brown") {
+            showBlock(rot, ele, x, y, z, xw, yw, zw, [196, 116, 73]);
         } else if (data == "blue") {
-            showBlock(30, 60, x, y, z, xw, yw, zw, [255, 255, 127]);
-
+            showBlock(rot, ele, x, y, z, xw, yw, zw, [60, 60, 255]);
+        } else if (data == "grey") {
+            showBlock(rot, ele, x, y, z, xw, yw, zw, [200, 200, 200]);
         }
         return
     }
@@ -129,11 +129,13 @@ function interpretLML(data, x, y, z, xw, yw, zw) {
         if (bracketdepth == 0 && bracketalready) {
             next = true;
         }
-        if (bracketdepth > 0 && char != "(") {
-            if (!next) {
-                text += char;
-            } else {
-                nexttext += char;
+        if (bracketdepth > 0) {
+            if (!(char == "(" && bracketdepth == 1)) {
+                if (!next) {
+                    text += char;
+                } else {
+                    nexttext += char;
+                }
             }
         } else if (char != "(" && char != ")") {
             dimension += char;
@@ -143,6 +145,7 @@ function interpretLML(data, x, y, z, xw, yw, zw) {
     dimension = parseFloat(dimension.substring(1));
 
     if (split === "x") {
+        dimension = (dimension+xw)%xw;
         if (xr) {
             interpretLML(text, x, y, z, dimension, yw, zw);
             interpretLML(nexttext, x+dimension, y, z, xw-dimension, yw, zw);
@@ -151,6 +154,7 @@ function interpretLML(data, x, y, z, xw, yw, zw) {
             interpretLML(text, x, y, z, dimension, yw, zw);
         }
     } else if (split === "y") {
+        dimension = (dimension+yw)%yw;
         if (yr) {
             interpretLML(text, x, y, z, xw, dimension, zw);
             interpretLML(nexttext, x, y+dimension, z, xw, yw-dimension, zw);
@@ -159,25 +163,69 @@ function interpretLML(data, x, y, z, xw, yw, zw) {
             interpretLML(text, x, y, z, xw, dimension, zw);
         }
     } else if (split === "z") {
-        interpretLML(text, x, y, z, dimension, yw, zw);
-        interpretLML(nexttext, x, y, z+dimension, xw, yw, zw-dimension);
-    }
+        dimension = (dimension+zw)%zw;
+        if (zr) {
+            interpretLML(text, x, y, z, xw, yw, dimension);
+            interpretLML(nexttext, x, y, z+dimension, xw, yw, zw-dimension);
+        } else {
+            interpretLML(nexttext, x, y, z+dimension, xw, yw, zw-dimension);
+            interpretLML(text, x, y, z, xw, yw, dimension);
+        }
+    } 
 }
 
 const WORLD = `
-x(
-green
+z400(
+    y475(
+        x600(
+            x200()(
+                y200(
+                    z300(
+
+                    )(
+                        x20(
+                            grey
+                        )(
+                            y20 (
+                                grey
+                            )(
+                                x-20 (
+                                    y-20 () (
+                                        grey
+                                    )
+                                )(
+                                    grey
+                                )
+                            )
+                        )
+                    )
+                )()
+            )
+        )()
+    )(
+        y50 (
+            z390 ()(
+                blue
+            )
+        )(
+            
+        )
+    )
+)(
+    grey
 )
-30
-(
-blue
-)
-`.replaceAll("\n", "").replaceAll(" ", "")
+`.replaceAll("\n", "").replaceAll(" ", "").replaceAll("\t", "")
 
 let rot = 30
 let ele = 45
 setInterval(function() {
     clear();
-    interpretLML(WORLD, -250, -250, -250, 500, 500, 500);
+    interpretLML(WORLD, -500, -500, -250, 1000, 1000, 500);
     rot++;
+    ele = quicksin(rot*2)*20+60
 }, 50)
+
+setInterval(function () {
+    width = window.innerWidth;
+    height = window.innerHeight;
+}, 1000)
