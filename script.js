@@ -152,11 +152,11 @@ function interpretLML(data, x, y, z, xw, yw, zw) {
         }
     } else if (split === "y") {
         if (yr) {
-            interpretLML(text, x, y, z, xw, yw-dimension, zw);
-            interpretLML(nexttext, x, y+dimension, z, xw, dimension, zw);
+            interpretLML(text, x, y, z, xw, dimension, zw);
+            interpretLML(nexttext, x, y+dimension, z, xw, yw-dimension, zw);
         } else {
-            interpretLML(nexttext, x, y, z, xw, yw, zw);
-            interpretLML(text, x, y, z, xw, yw, zw);
+            interpretLML(nexttext, x, y+dimension, z, xw, yw-dimension, zw);
+            interpretLML(text, x, y, z, xw, dimension, zw);
         }
     } else if (split === "z") {
         interpretLML(text, x, y, z, dimension, yw, zw);
@@ -179,4 +179,5 @@ let ele = 45
 setInterval(function() {
     clear();
     interpretLML(WORLD, -250, -250, -250, 500, 500, 500);
+    rot++;
 }, 50)
