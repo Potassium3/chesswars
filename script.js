@@ -1,9 +1,9 @@
 function quicksin(x) {
-    return Math.sin(x)
+    return Math.sin(x*(3.14159*2)/360)
 }
 
 function quickcos(x) {
-    return Math.cos(x)
+    return Math.cos(x*(3.14159*2)/360)
 }
 
 function multiplyvector(v, m) {
@@ -43,9 +43,11 @@ function clear() {
 }
 
 function showBlock(rot, ele, x, y, z, xw, yw, zw) {
-    xr = (rot%360) < 180
-    yr = (rot%360) < 90 || (rot%360) >= 270
-    zr = false
+    let xr = (rot%360) < 180
+    let yr = (rot%360) < 90 || (rot%360) >= 270
+    let zr = false
+    console.log(rot, ele)
+    console.log(xr, yr, zr);
     // Draw x face
     if (!xr) {
         drawPolygon([
@@ -100,5 +102,5 @@ let rot = 4;
 setInterval(function() {
     clear();
     showBlock(rot, 45, 0, 0, 0, 20, 100, 300);
-    rot += 0.09;
+    rot += 2;
 }, 50)
