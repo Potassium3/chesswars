@@ -1,8 +1,14 @@
 let width = window.innerWidth;
 let height = window.innerHeight;
 
+let sintable = [];
+for (let i=0; i<360; i++) {
+    sintable.push(Math.sin(i*(3.14159*2)/360))
+}
+console.log(sintable);
+
 function quicksin(x) {
-    return Math.sin(x*(3.14159*2)/360)
+    return sintable[x%360]
 }
 
 function quickcos(x) {
@@ -32,7 +38,7 @@ function drawPolygon(arr, rgb) {
     let game = document.getElementById("game");
     let clipPath = ""
     for (let item of arr) {
-        clipPath += `calc(${item[0]+width/2}px) calc(${item[1]+height/2}px),`
+        clipPath += `${item[0]+width/2}px ${item[1]+height/2}px,`
     }
     clipPath = clipPath.slice(0, -1);
     game.innerHTML += `<div style="clip-path: polygon(${clipPath}); background-color: rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]});"></div>`
@@ -96,16 +102,16 @@ function showBlock(rot, ele, x, y, z, xw, yw, zw, rgb) {
         ], [rgb[0]*0.95, rgb[1]*0.95, rgb[2]*0.95]);
     }
 }
-
+/*
 function interpretLML(data, x, y, z, xw, yw, zw) {
     let xr = (rot%360) < 180
     let yr = (rot%360) < 90 || (rot%360) >= 270
     let zr = false
     if (!data.includes("(")) {
         if (data == "brown") {
-            showBlock(rot, ele, x, y, z, xw, yw, zw, [196, 116, 73]);
-        } else if (data == "blue") {
-            showBlock(rot, ele, x, y, z, xw, yw, zw, [60, 60, 255]);
+            showBlock(rot, ele, x, y, z, xw, yw, zw, [150, 72, 24]);
+        } else if (data == "white") {
+            showBlock(rot, ele, x, y, z, xw, yw, zw, [237, 197, 179]);
         } else if (data == "grey") {
             showBlock(rot, ele, x, y, z, xw, yw, zw, [200, 200, 200]);
         }
@@ -172,57 +178,17 @@ function interpretLML(data, x, y, z, xw, yw, zw) {
             interpretLML(text, x, y, z, xw, yw, dimension);
         }
     } 
-}
+}*/
 
-const WORLD = `
-z400(
-    y475(
-        x600(
-            x200()(
-                y200(
-                    z300(
-
-                    )(
-                        x20(
-                            grey
-                        )(
-                            y20 (
-                                grey
-                            )(
-                                x-20 (
-                                    y-20 () (
-                                        grey
-                                    )
-                                )(
-                                    grey
-                                )
-                            )
-                        )
-                    )
-                )()
-            )
-        )()
-    )(
-        y50 (
-            z390 ()(
-                blue
-            )
-        )(
-            
-        )
-    )
-)(
-    grey
-)
-`.replaceAll("\n", "").replaceAll(" ", "").replaceAll("\t", "")
-
+const WIDTH = 8; // 8x8 board
 let rot = 30
 let ele = 45
+
 setInterval(function() {
     clear();
-    interpretLML(WORLD, -500, -500, -250, 1000, 1000, 500);
-    rot++;
-    ele = quicksin(rot*2)*20+60
+    showBlock(rot, ele, -50, -50, -50, 100, 100, 100, [237, 197, 179])
+    rot+=3;
+    ele = quicksin(rot*2)*5+70
 }, 50)
 
 setInterval(function () {
