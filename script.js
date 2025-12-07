@@ -8,11 +8,11 @@ for (let i=0; i<360; i++) {
 console.log(sintable);
 
 function quicksin(x) {
-    return sintable[x%360]
+    return sintable[Math.floor(x%360)]
 }
 
 function quickcos(x) {
-    return Math.cos(x*(3.14159*2)/360)
+    return sintable[Math.floor((x+90)%360)]
 }
 
 function multiplyvector(v, m) {
@@ -102,7 +102,7 @@ function showBlock(rot, ele, x, y, z, xw, yw, zw, rgb) {
         ], [rgb[0]*0.95, rgb[1]*0.95, rgb[2]*0.95]);
     }
 }
-/*
+
 function interpretLML(data, x, y, z, xw, yw, zw) {
     let xr = (rot%360) < 180
     let yr = (rot%360) < 90 || (rot%360) >= 270
@@ -151,7 +151,7 @@ function interpretLML(data, x, y, z, xw, yw, zw) {
     dimension = parseFloat(dimension.substring(1));
 
     if (split === "x") {
-        dimension = (dimension+xw)%xw;
+        dimension = dimension != xw ? (dimension+xw)%xw : dimension; // Cope with negative LML values
         if (xr) {
             interpretLML(text, x, y, z, dimension, yw, zw);
             interpretLML(nexttext, x+dimension, y, z, xw-dimension, yw, zw);
@@ -160,7 +160,7 @@ function interpretLML(data, x, y, z, xw, yw, zw) {
             interpretLML(text, x, y, z, dimension, yw, zw);
         }
     } else if (split === "y") {
-        dimension = (dimension+yw)%yw;
+        dimension = dimension != yw ? (dimension+yw)%yw : dimension;
         if (yr) {
             interpretLML(text, x, y, z, xw, dimension, zw);
             interpretLML(nexttext, x, y+dimension, z, xw, yw-dimension, zw);
@@ -169,7 +169,7 @@ function interpretLML(data, x, y, z, xw, yw, zw) {
             interpretLML(text, x, y, z, xw, dimension, zw);
         }
     } else if (split === "z") {
-        dimension = (dimension+zw)%zw;
+        dimension = dimension != zw ? (dimension+zw)%zw : dimension;
         if (zr) {
             interpretLML(text, x, y, z, xw, yw, dimension);
             interpretLML(nexttext, x, y, z+dimension, xw, yw, zw-dimension);
@@ -178,17 +178,53 @@ function interpretLML(data, x, y, z, xw, yw, zw) {
             interpretLML(text, x, y, z, xw, yw, dimension);
         }
     } 
-}*/
+}
+
+function updateWorld(gridState) {
+    showBlock(rot, ele, -400, -400, 500, 800, 800, 1, [146, 190, 212]);
+    let board = "";
+    for (let i=0; i<WIDTH; i++) {
+        board += "y90("
+        let row = "";
+        for (let j=0; j<WIDTH; j++) {
+            if (gridState[i][j] != "p") {
+                row += "x99.9(z-40()("+((i+j)%2==0?"white":"brown")+"))("
+            } else {
+                row += "x99.9(z-40(grey)("+((i+j)%2==0?"white":"brown")+"))("
+            }
+        }
+        for (let i=0; i<WIDTH; i++) {
+            row += ")"
+        }
+        board += row+")("
+    }
+    for (let i=0; i<WIDTH; i++) {
+        board += ")"
+    }
+    return `${board}`.replaceAll(" ", "").replaceAll("\n", "").replaceAll("\t", "");
+}
 
 const WIDTH = 8; // 8x8 board
 let rot = 30
-let ele = 45
+let ele = 60
+let grid = [
+    "p_p_____",
+    "________",
+    "________",
+    "________",
+    "________",
+    "________",
+    "________",
+    "________",
+]
 
+let world;
 setInterval(function() {
+    //rot = quicksin(i)*20+30;
+    //ele = quicksin(i/2)*20+50
     clear();
-    showBlock(rot, ele, -50, -50, -50, 100, 100, 100, [237, 197, 179])
-    rot+=3;
-    ele = quicksin(rot*2)*5+70
+    world = updateWorld(grid);
+    interpretLML(world, -400, -400, -50, 800, 800, 100);
 }, 50)
 
 setInterval(function () {
