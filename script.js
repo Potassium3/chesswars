@@ -60,14 +60,14 @@ function showBlock(rot, ele, x, y, z, xw, yw, zw, rgb) {
             convert3D2D(x, y+yw, z, rot, ele),
             convert3D2D(x, y+yw, z+zw, rot, ele),
             convert3D2D(x, y, z+zw, rot, ele),
-        ], [rgb[0], rgb[1], rgb[2]]);
+        ], [rgb[0]*0.9, rgb[1]*0.9, rgb[2]*0.9]);
     } else {
         drawPolygon([
             convert3D2D(x+xw, y, z, rot, ele),
             convert3D2D(x+xw, y+yw, z, rot, ele),
             convert3D2D(x+xw, y+yw, z+zw, rot, ele),
             convert3D2D(x+xw, y, z+zw, rot, ele),
-        ], [rgb[0], rgb[1], rgb[2]]);
+        ], [rgb[0]*0.9, rgb[1]*0.9, rgb[2]*0.9]);
     }
     // Draw y face
     if (!yr) {
@@ -76,14 +76,14 @@ function showBlock(rot, ele, x, y, z, xw, yw, zw, rgb) {
             convert3D2D(x+xw, y, z, rot, ele),
             convert3D2D(x+xw, y, z+zw, rot, ele),
             convert3D2D(x, y, z+zw, rot, ele),
-        ], [rgb[0]*0.9, rgb[1]*0.9, rgb[2]*0.9]);
+        ], [rgb[0]*0.7, rgb[1]*0.7, rgb[2]*0.7]);
     } else {
         drawPolygon([
             convert3D2D(x, y+yw, z, rot, ele),
             convert3D2D(x+xw, y+yw, z, rot, ele),
             convert3D2D(x+xw, y+yw, z+zw, rot, ele),
             convert3D2D(x, y+yw, z+zw, rot, ele),
-        ], [rgb[0]*0.9, rgb[1]*0.9, rgb[2]*0.9]);
+        ], [rgb[0]*0.7, rgb[1]*0.7, rgb[2]*0.7]);
     }
     // Draw z face
     if (!zr) {
@@ -92,14 +92,14 @@ function showBlock(rot, ele, x, y, z, xw, yw, zw, rgb) {
             convert3D2D(x+xw, y, z, rot, ele),
             convert3D2D(x+xw, y+yw, z, rot, ele),
             convert3D2D(x, y+yw, z, rot, ele),
-        ], [rgb[0]*0.95, rgb[1]*0.95, rgb[2]*0.95]);
+        ], [rgb[0], rgb[1], rgb[2]]);
     } else {
         drawPolygon([
             convert3D2D(x, y, z+zw, rot, ele),
             convert3D2D(x+xw, y, z+zw, rot, ele),
             convert3D2D(x+xw, y+yw, z+zw, rot, ele),
             convert3D2D(x, y+yw, z+zw, rot, ele),
-        ], [rgb[0]*0.95, rgb[1]*0.95, rgb[2]*0.95]);
+        ], [rgb[0], rgb[1], rgb[2]]);
     }
 }
 
@@ -111,7 +111,7 @@ function interpretLML(data, x, y, z, xw, yw, zw) {
         if (data == "brown") {
             showBlock(rot, ele, x, y, z, xw, yw, zw, [150, 72, 24]);
         } else if (data == "white") {
-            showBlock(rot, ele, x, y, z, xw, yw, zw, [237, 197, 179]);
+            showBlock(rot, ele, x, y, z, xw, yw, zw, [255, 240, 230]);
         } else if (data == "grey") {
             showBlock(rot, ele, x, y, z, xw, yw, zw, [200, 200, 200]);
         }
@@ -184,7 +184,7 @@ function updateWorld(gridState) {
     showBlock(rot, ele, -400, -400, 500, 800, 800, 1, [146, 190, 212]);
     let board = "";
     for (let i=0; i<WIDTH; i++) {
-        board += "y90("
+        board += "y100("
         let row = "";
         for (let j=0; j<WIDTH; j++) {
             if (gridState[i][j] != "p") {
